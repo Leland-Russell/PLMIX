@@ -17,7 +17,7 @@
 \code{plot} method for class \code{mpPLMIX}.
 }
 \details{
-By recalling the \code{chartJSRadar} function from the \code{radarchart} package and the routines of the \code{ggplot2} package, \code{plot.mpPLMIX} produces a radar plot of the support parameters and, when \eqn{G>1}, a donut plot of the mixture weights and a heatmap of the component membership probabilities based on the MAP estimates.  The radar chart is returned in the Viewer Pane.
+By recalling the \code{radarchart} function from the \code{fmsb} package and the routines of the \code{ggplot2} package, \code{plot.mpPLMIX} produces a radar plot of the support parameters and, when \eqn{G>1}, a donut plot of the mixture weights and a heatmap of the component membership probabilities based on the MAP estimates.  The radar chart is returned in the Viewer Pane.
 }
 \examples{
 
@@ -31,12 +31,12 @@ MAP_multi <- mapPLMIX_multistart(pi_inv=d_carconf, K=ncol(d_carconf), G=3, n_sta
 plot(MAP_multi)
 }
 \references{
-Ashton, D. and Porter, S. (2016). radarchart: Radar Chart from 'Chart.js'. R package version 0.3.1. \url{https://CRAN.R-project.org/package=radarchart}
+Nakazawa, M. (2024). fmsb: Functions for Medical Statistics Book with some Demographic Data. R package version 0.7.6. \url{https://CRAN.R-project.org/package=fmsb}
 
 Wickham, H. (2009). ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York.
 }
 \seealso{
-\code{\link[radarchart]{chartJSRadar}} and \code{\link[ggplot2]{ggplot}}
+\code{\link[fmsb]{radarchart}} and \code{\link[ggplot2]{ggplot}}
 }
 \author{
 Cristina Mollica and Luca Tardella

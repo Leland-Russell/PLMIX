@@ -47,7 +47,7 @@
 \details{
 Plots of the MCMC samples include histograms, densities, traceplots, running means plots, overlapped densities comparing the complete and partial samples, autocorrelation functions, crosscorrelation plots and caterpillar plots of the 90 and 95\% equal-tails credible intervals. Note that the latter are created for the support parameters (when either \code{family=NA} or \code{family="p"}), for the mixture weights in the case \eqn{G>1} (when either \code{family=NA} or \code{family="w"}), for the log-likelihood values (when \code{family="log_lik"}), for the deviance values (when \code{family="deviance"}). Convergence tools include the potential scale reduction factor and the Geweke z-score. These functionalities are implemented with a call to the \code{ggs} and \code{ggmcmc} functions of the \code{ggmcmc} package (see 'Examples' for the specification of the \code{plot} argument) and for the objective function values (when \code{family="objective"}). 
 
-By recalling the \code{chartJSRadar} function from the \code{radarchart} package and the routines of the \code{ggplot2} package, \code{plot.gsPLMIX} additionally produces a radar plot of the support parameters and, when \eqn{G>1}, a donut plot of the mixture weights based on the posterior point estimates. The radar chart is returned in the Viewer Pane.
+By recalling the \code{radarchart} function from the \code{fmsb} package and the routines of the \code{ggplot2} package, \code{plot.gsPLMIX} additionally produces a radar plot of the support parameters and, when \eqn{G>1}, a donut plot of the mixture weights based on the posterior point estimates. The radar chart is returned in the Viewer Pane.
 }
 \examples{
 
@@ -72,14 +72,14 @@ GIBBS <- gibbsPLMIX(pi_inv=d_carconf, K=ncol(d_carconf), G=5, n_iter=30, n_burn=
 # plot(GIBBS, family="deviance", plot=c("traceplot","density"), param_page=1)
 }
 \references{
-Ashton, D. and Porter, S. (2016). radarchart: Radar Chart from 'Chart.js'. R package version 0.3.1. \url{https://CRAN.R-project.org/package=radarchart}
+Nakazawa, M. (2024). fmsb: Functions for Medical Statistics Book with some Demographic Data. R package version 0.7.6. \url{https://CRAN.R-project.org/package=fmsb}
 
 Wickham, H. (2009). ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York.
 
 Fernandez-i-Marin, X. (2006). ggmcmc: Analysis of MCMC Samples and Bayesian Inference, \emph{Journal of Statistical Software}, \bold{70}(9), pages 1--20, DOI: 10.18637/jss.v070.i09.
 }
 \seealso{
-\code{\link[ggmcmc]{ggs}}, \code{\link[ggmcmc]{ggmcmc}}, \code{\link[radarchart]{chartJSRadar}} and \code{\link[ggplot2]{ggplot}}
+\code{\link[ggmcmc]{ggs}}, \code{\link[ggmcmc]{ggmcmc}}, \code{\link[fmsb]{radarchart}} and \code{\link[ggplot2]{ggplot}}
 }
 \author{
 Cristina Mollica and Luca Tardella

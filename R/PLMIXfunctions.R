@@ -72,7 +72,9 @@ freq_to_unit <- function(freq_distr){
 	#'@importFrom reshape2 melt
 	#'@importFrom rcdd makeH
 	#'@importFrom rcdd scdd 
-	#'@importFrom radarchart chartJSRadar
+	#'@importFrom fmsb radarchart
+	#'@importFrom grDevices topo.colors
+	#'@importFrom graphics legend
 	#'@importFrom Rcpp evalCpp
 	#'
 	
@@ -1597,7 +1599,7 @@ plot.mpPLMIX <- function(x,max_scale_radar=NULL,...){
   #' 
   #' \code{plot} method for class \code{mpPLMIX}.
   #'
-  #' By recalling the \code{chartJSRadar} function from the \code{radarchart} package and the routines of the \code{ggplot2} package, \code{plot.mpPLMIX} produces a radar plot of the support parameters and, when \eqn{G>1}, a donut plot of the mixture weights and a heatmap of the component membership probabilities based on the MAP estimates.  The radar chart is returned in the Viewer Pane.
+  #' By recalling the \code{radarchart} function from the \code{fmsb} package and the routines of the \code{ggplot2} package, \code{plot.mpPLMIX} produces a radar plot of the support parameters and, when \eqn{G>1}, a donut plot of the mixture weights and a heatmap of the component membership probabilities based on the MAP estimates.  The radar chart is returned in the Viewer Pane.
   #'  
   #' @param x Object of class \code{mpPLMIX} returned by the \code{mpPLMIX} function.
   #' @param max_scale_radar Numeric scalar indicating the maximum value on each axis of the radar plot for the support parameter point estimates. Default is \code{NULL} meaning that the maximum of the estimated support parameters is used.
@@ -1605,13 +1607,13 @@ plot.mpPLMIX <- function(x,max_scale_radar=NULL,...){
   #'
   #'
   #' @references 
-  #' Ashton, D. and Porter, S. (2016). radarchart: Radar Chart from 'Chart.js'. R package version 0.3.1. \url{https://CRAN.R-project.org/package=radarchart}
+  #' Nakazawa, M. (2024). fmsb: Functions for Medical Statistics Book with some Demographic Data. R package version 0.7.6. \url{https://CRAN.R-project.org/package=fmsb}
   #' 
   #' Wickham, H. (2009). ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York.
   #' 
   #' @author Cristina Mollica and Luca Tardella
   #' 
-  #' @seealso \code{\link[radarchart]{chartJSRadar}} and \code{\link[ggplot2]{ggplot}}
+  #' @seealso \code{\link[fmsb]{radarchart}} and \code{\link[ggplot2]{ggplot}}
   #' 
   #' @examples
   #' 
@@ -1648,10 +1650,16 @@ plot.mpPLMIX <- function(x,max_scale_radar=NULL,...){
   }else{
     scores=as.list(as.data.frame(t(mpPLMIX_out$mod$P_map)))
   }
-  names(scores)=paste("Group",1:G)
+
+  scores=as.data.frame(t(as.data.frame(scores)))
+  max_scale_radar=ifelse(is.null(max_scale_radar),max(scores),max_scale_radar)
+  rownames(scores)=paste("Group",1:G)
+  colnames(scores)=labs
+  scores=rbind(rep(max_scale_radar,G),rep(0,G),scores)
   main_radar="MAP estimates of the support parameters"
-  oo=chartJSRadar(scores = scores, labs = labs, main=main_radar,maxScale = ifelse(is.null(max_scale_radar),max(unlist(scores)),max_scale_radar))
-  print(oo)
+
+  radarchart(df=scores,maxmin=T,axistype=6,plty=1,plwd=2,pcol=topo.colors(G),pfcol=topo.colors(G,alpha=1/G),cglty=1,cglcol="grey",title=main_radar)
+  legend(x=1.5,y=1,legend=rownames(scores[1:G+2,]),pch=15,col=topo.colors(G),bty="n",pt.cex=2)
 
   if(G>1){
     if(is.null(mpPLMIX_out$convergence)){
@@ -1978,7 +1986,7 @@ plot.gsPLMIX <- function(x,file="ggmcmc-output.pdf",family=NA,plot=NULL,param_pa
   #'
   #' Plots of the MCMC samples include histograms, densities, traceplots, running means plots, overlapped densities comparing the complete and partial samples, autocorrelation functions, crosscorrelation plots and caterpillar plots of the 90 and 95\% equal-tails credible intervals. Note that the latter are created for the support parameters (when either \code{family=NA} or \code{family="p"}), for the mixture weights in the case \eqn{G>1} (when either \code{family=NA} or \code{family="w"}), for the log-likelihood values (when \code{family="log_lik"}), for the deviance values (when \code{family="deviance"}). Convergence tools include the potential scale reduction factor and the Geweke z-score. These functionalities are implemented with a call to the \code{ggs} and \code{ggmcmc} functions of the \code{ggmcmc} package (see 'Examples' for the specification of the \code{plot} argument) and for the objective function values (when \code{family="objective"}). 
   #' 
-  #' By recalling the \code{chartJSRadar} function from the \code{radarchart} package and the routines of the \code{ggplot2} package, \code{plot.gsPLMIX} additionally produces a radar plot of the support parameters and, when \eqn{G>1}, a donut plot of the mixture weights based on the posterior point estimates. The radar chart is returned in the Viewer Pane.
+  #' By recalling the \code{radarchart} function from the \code{fmsb} package and the routines of the \code{ggplot2} package, \code{plot.gsPLMIX} additionally produces a radar plot of the support parameters and, when \eqn{G>1}, a donut plot of the mixture weights based on the posterior point estimates. The radar chart is returned in the Viewer Pane.
   #'  
   #' @param x Object of class \code{gsPLMIX} returned by the \code{gibbsPLMIX} function.
   #' @param file Character vector with the name of the file to be created in the current working directory. Defaults is "ggmcmc-output.pdf". When NULL, plots are directly returned into the current working device (not recommended). This option allows also the user to work with an opened pdf (or other) device. When the file has an html file extension, the output is an Rmarkdown report with the figures embedded in the html file.
@@ -1994,7 +2002,7 @@ plot.gsPLMIX <- function(x,file="ggmcmc-output.pdf",family=NA,plot=NULL,param_pa
   #'
   #'
   #' @references 
-  #' Ashton, D. and Porter, S. (2016). radarchart: Radar Chart from 'Chart.js'. R package version 0.3.1. \url{https://CRAN.R-project.org/package=radarchart}
+  #' Nakazawa, M. (2024). fmsb: Functions for Medical Statistics Book with some Demographic Data. R package version 0.7.6. \url{https://CRAN.R-project.org/package=fmsb}
   #' 
   #' Wickham, H. (2009). ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York.
   #' 
@@ -2002,7 +2010,7 @@ plot.gsPLMIX <- function(x,file="ggmcmc-output.pdf",family=NA,plot=NULL,param_pa
   #' 
   #' @author Cristina Mollica and Luca Tardella
   #' 
-  #' @seealso \code{\link[ggmcmc]{ggs}}, \code{\link[ggmcmc]{ggmcmc}}, \code{\link[radarchart]{chartJSRadar}} and \code{\link[ggplot2]{ggplot}}
+  #' @seealso \code{\link[ggmcmc]{ggs}}, \code{\link[ggmcmc]{ggmcmc}}, \code{\link[fmsb]{radarchart}} and \code{\link[ggplot2]{ggplot}}
   #' 
   #' @examples
   #' 
@@ -2060,9 +2068,15 @@ plot.gsPLMIX <- function(x,file="ggmcmc-output.pdf",family=NA,plot=NULL,param_pa
       scores=as.list(as.data.frame(t(matrix(temp_radar$quantiles[grep("p",rownames(temp_radar$quantiles)),],nrow=G,ncol=K))))
       main_radar="Posterior medians of the support parameters"
     }
-    names(scores)=paste("Group",1:G)
-    oo=chartJSRadar(scores = scores, labs = labs, main=main_radar,maxScale = ifelse(is.null(max_scale_radar),max(unlist(scores)),max_scale_radar))
-    print(oo)
+
+    scores=as.data.frame(t(as.data.frame(scores)))
+    max_scale_radar=ifelse(is.null(max_scale_radar),max(scores),max_scale_radar)
+    rownames(scores)=paste("Group",1:G)
+    colnames(scores)=labs
+    scores=rbind(rep(max_scale_radar,G),rep(0,G),scores)
+
+    radarchart(df=scores,maxmin=T,axistype=6,plty=1,plwd=2,pcol=topo.colors(G),pfcol=topo.colors(G,alpha=1/G),cglty=1,cglcol="grey",title=main_radar)
+    legend(x=1.5,y=1,legend=rownames(scores[1:G+2,]),pch=15,col=topo.colors(G),bty="n",pt.cex=2)
 #  }  
   
 #  if(!is.na(family) & family=="w" & G>1){
